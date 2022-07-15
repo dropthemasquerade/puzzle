@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import AppLayout from './components/layout/AppLayout';
 import Blank from './pages/Blank';
 import Flow from './pages/Flow';
+import Drag from './pages/Drag';
 
 function App() {
     return (
@@ -13,7 +14,7 @@ function App() {
                     <Route index element={<Blank />} />
                     <Route path='/config' element={<Blank />} />
                     <Route path='/pay' element={<Flow />} />
-                    <Route path='/confirm' element={<Blank />} />
+                    <Route path='/confirm' element={<Drag />} />
                     <Route path='/batch_notify' element={<Blank />} />
                     <Route path='/query' element={<Blank />} />
                     <Route path='/refund' element={<Blank />} />
