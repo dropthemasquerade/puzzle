@@ -1,8 +1,33 @@
 import React, {useState} from "react";
 import {DragDropContext, Draggable, Droppable} from "react-beautiful-dnd";
 
+import {
+    CButton,
+    CButtonGroup,
+    CCard,
+    CCardBody,
+    CCardHeader,
+    CCol,
+    CForm,
+    CFormInput,
+    CFormSelect,
+    CFormSwitch,
+    CInputGroup,
+    CRow,
+    CTable,
+    CTableBody,
+    CTableDataCell,
+    CTableHead,
+    CTableHeaderCell,
+    CTableRow,
+    CToast,
+    CToastBody,
+    CToastHeader,
+} from '@coreui/react'
 
 const Drag = () => {
+
+  const [visible, setVisible] = useState(false)
 
     const getItems = (count, offset = 0) =>
         Array.from({length: count}, (v, k) => k).map(k => ({
@@ -57,6 +82,10 @@ const Drag = () => {
 
     const [state, setState] = useState([getItems(10), getItems(5, 10)]);
 
+    const submit = () => {
+
+    }
+
     const onDragEnd = (result) => {
         const {source, destination} = result;
 
@@ -85,47 +114,96 @@ const Drag = () => {
 
     return (
 
-        <div>
-            <button
-                type="button"
-                onClick={() => {
-                    setState([...state, []]);
-                }}
+      <CCard className="mb-4">
+
+
+      <CCardHeader color="light">
+      <CRow>
+        <CCol xs={4}>
+        <CButton component="a" color="danger"
+        role="button"
+        onClick={() => {
+            setState([...state, []]);
+        }}
+        >
+          流程
+        </CButton>
+        <CButton component="a" color="success"
+        role="button"
+        onClick={() => {
+            setState([...state, getItems(1)]);
+        }}
+        >
+          函数
+        </CButton>
+
+          <CButton component="a" color="info"
+          role="button"
+          onClick={() => {
+              setState([...state, getItems(1)]);
+          }}
+          >
+            赋值
+          </CButton>
+          <CButton component="a" color="primary"
+          role="button"
+          onClick={() => {
+              setState([...state, getItems(1)]);
+          }}
+          >
+            实体
+          </CButton>
+          <CButton component="a" color="warning"
+          role="button"
+          onClick={() => {
+              setState([...state, getItems(1)]);
+          }}
+          >
+            二元
+          </CButton>
+        </CCol>
+
+        <CCol xs={6}>
+        <CToast autohide={false} visible={visible}>
+          <CToastHeader closeButton>
+            <svg
+              className="rounded me-2"
+              width="20"
+              height="20"
+              xmlns="http://www.w3.org/2000/svg"
+              preserveAspectRatio="xMidYMid slice"
+              focusable="false"
+              role="img"
             >
-                新增分组
-            </button>
-            <button
-                type="button"
-                onClick={() => {
-                    setState([...state, getItems(1)]);
-                }}
-            >
-                新增赋值
-            </button>
-            <button
-                type="button"
-                onClick={() => {
-                    setState([...state, getItems(1)]);
-                }}
-            >
-                新增实体
-            </button>
-            <button
-                type="button"
-                onClick={() => {
-                    setState([...state, getItems(1)]);
-                }}
-            >
-                新增函数
-            </button>
-            <button
-                type="button"
-                onClick={() => {
-                    setState([...state, getItems(1)]);
-                }}
-            >
-                新增二元计算
-            </button>
+              <rect width="100%" height="100%" fill="#007aff"></rect>
+            </svg>
+            <strong className="me-auto">新增部门</strong>
+          </CToastHeader>
+          <CToastBody>
+          <CForm>
+            <CRow className="mb-3">
+            <CInputGroup class="mb-3">
+              <CFormInput placeholder="channelInput"
+              aria-label="channelInput"
+              aria-describedby="basic-addon1"
+              />
+              </CInputGroup>
+            </CRow>
+            <CButton type="submit" onClick={submit}>提交</CButton>
+          </CForm>
+          </CToastBody>
+        </CToast>
+        </CCol>
+      </CRow>
+      </CCardHeader>
+
+      <CCardBody>
+
+
+
+
+
+
             <div style={{display: "flex"}}>
                 <DragDropContext onDragEnd={onDragEnd}>
                     {state.map((el, ind) => (
@@ -159,18 +237,26 @@ const Drag = () => {
                                                         }}
                                                     >
                                                         {item.content}
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => {
-                                                                const newState = [...state];
-                                                                newState[ind].splice(index, 1);
-                                                                setState(
-                                                                    newState.filter(group => group.length)
-                                                                );
-                                                            }}
-                                                        >
-                                                            delete
-                                                        </button>
+
+                                                        <CButtonGroup
+                                                           size="sm"
+                                                           role="group" aria-label="Basic mixed styles example">
+                                                          <CButton color="success"
+                                                          onClick={() => setVisible(!visible)}>编辑</CButton>
+                                                          <CButton color="danger"
+                                                          data-id={item.id}
+                                                          onClick={() => {
+                                                              const newState = [...state];
+                                                              newState[ind].splice(index, 1);
+                                                              setState(
+                                                                  newState.filter(group => group.length)
+                                                              );
+                                                          }}
+                                                          >
+                                                          删除
+                                                          </CButton>
+                                                        </CButtonGroup>
+
                                                     </div>
                                                 </div>
                                             )}
@@ -184,7 +270,8 @@ const Drag = () => {
                 </DragDropContext>
             </div>
 
-        </div>)
+    </CCardBody>
+    </CCard>)
 }
 
 export default Drag;

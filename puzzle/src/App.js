@@ -1,4 +1,5 @@
-import './App.scss';
+// import './App.scss';
+import './scss/style.scss'
 import 'boxicons/css/boxicons.min.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import AppLayout from './components/layout/AppLayout';
