@@ -89,7 +89,7 @@ const Drag = () => {
     });
 
 
-    const [state, setState] = useState([getItems(2, 0, "success"), getItems(2, 1, "info"), getItems(2, 2, "warning")]);
+    const [state, setState] = useState([]);
 
     const submit = () => {
 
@@ -255,7 +255,6 @@ const Drag = () => {
                             {(provided, snapshot) => (
                                 <div
                                     ref={provided.innerRef}
-                                    style={getListStyle(snapshot.isDraggingOver)}
                                     {...provided.droppableProps}
                                 >
                                     {el.map((item, index) => (
@@ -269,10 +268,6 @@ const Drag = () => {
                                                     ref={provided.innerRef}
                                                     {...provided.draggableProps}
                                                     {...provided.dragHandleProps}
-                                                    style={getItemStyle(
-                                                        snapshot.isDragging,
-                                                        provided.draggableProps.style
-                                                    )}
                                                 >
 
 
