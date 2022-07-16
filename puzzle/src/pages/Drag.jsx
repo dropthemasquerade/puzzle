@@ -1,5 +1,8 @@
 import React, {useState} from "react";
 import {DragDropContext, Draggable, Droppable} from "react-beautiful-dnd";
+import SyntaxHighlighter from 'react-syntax-highlighter';
+import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+
 
 import {
     CButton,
@@ -34,6 +37,9 @@ import DropdownTreeSelect from 'react-dropdown-tree-select'
 import 'react-dropdown-tree-select/dist/styles.css'
 
 const Drag = () => {
+
+
+  const codeString = 'type myInstance struct;';
 
   const [visible, setVisible] = useState(false)
   const [counter, setCounter] = useState(0)
@@ -152,12 +158,14 @@ const Drag = () => {
 
     return (
 
+      <CRow>
+        <CCol sm={8}>
       <CCard className="mb-4">
 
 
       <CCardHeader color="light">
       <CRow>
-        <CCol xs={4}>
+        <CCol xs={8}>
         <CButton component="a" color="danger"
         role="button"
         onClick={() => {
@@ -202,42 +210,6 @@ const Drag = () => {
         </CCol>
 
         <CCol xs={6}>
-        <CToast autohide={false} visible={visible}>
-          <CToastHeader closeButton>
-            <svg
-              className="rounded me-2"
-              width="20"
-              height="20"
-              xmlns="http://www.w3.org/2000/svg"
-              preserveAspectRatio="xMidYMid slice"
-              focusable="false"
-              role="img"
-            >
-              <rect width="100%" height="100%" fill="#007aff"></rect>
-            </svg>
-            <strong className="me-auto">新增赋值</strong>
-          </CToastHeader>
-          <CToastBody>
-          <CForm>
-            <CRow className="mb-3">
-            <CInputGroup class="mb-3">
-              <CFormInput placeholder="channelInput"
-              aria-label="channelInput"
-              aria-describedby="basic-addon1"
-              />
-              </CInputGroup>
-
-              <CCol xs={4}>
-                 <DropdownTreeSelect data={data} onChange={onChange} onAction={onAction} onNodeToggle={onNodeToggle} />
-                 <DropdownTreeSelect data={data} onChange={onChange} onAction={onAction} onNodeToggle={onNodeToggle} />
-              </CCol>
-
-
-            </CRow>
-            <CButton type="submit" onClick={submit}>提交</CButton>
-          </CForm>
-          </CToastBody>
-        </CToast>
         </CCol>
       </CRow>
       </CCardHeader>
@@ -338,7 +310,68 @@ const Drag = () => {
           清空
         </CButton>
     </CCardFooter>
-    </CCard>)
+    </CCard>
+
+    </CCol>
+
+    <CCol sm={4}>
+    <CCard>
+      <CCardHeader>参数设定</CCardHeader>
+      <CCardBody>
+
+
+
+
+      <CToast autohide={false} visible={visible}>
+        <CToastHeader closeButton>
+          <svg
+            className="rounded me-2"
+            width="20"
+            height="20"
+            xmlns="http://www.w3.org/2000/svg"
+            preserveAspectRatio="xMidYMid slice"
+            focusable="false"
+            role="img"
+          >
+            <rect width="100%" height="100%" fill="#007aff"></rect>
+          </svg>
+          <strong className="me-auto">新增赋值</strong>
+        </CToastHeader>
+        <CToastBody>
+        <CForm>
+          <CRow className="mb-3">
+          <CInputGroup class="mb-3">
+            <CFormInput placeholder="channelInput"
+            aria-label="channelInput"
+            aria-describedby="basic-addon1"
+            />
+            </CInputGroup>
+
+            <CCol xs={4}>
+               <DropdownTreeSelect data={data} onChange={onChange} onAction={onAction} onNodeToggle={onNodeToggle} />
+               <DropdownTreeSelect data={data} onChange={onChange} onAction={onAction} onNodeToggle={onNodeToggle} />
+            </CCol>
+
+
+          </CRow>
+          <CButton type="submit" onClick={submit}>提交</CButton>
+        </CForm>
+        </CToastBody>
+      </CToast>
+      </CCardBody>
+    </CCard>
+    <CCard>
+      <CCardHeader>代码预览</CCardHeader>
+      <CCardBody>
+
+        <SyntaxHighlighter language="golang" style={docco}>
+           {codeString}
+         </SyntaxHighlighter>
+      </CCardBody>
+    </CCard>
+    </CCol>
+   </CRow>
+  )
 }
 
 export default Drag;
