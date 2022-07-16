@@ -303,6 +303,12 @@ const Drag = () => {
         <CButton>
         提交
         </CButton>
+        <CButton color="success">
+          渠道绑定
+        </CButton>
+        <CButton color="secondary">
+          部署
+        </CButton>
         <CButton color="warning">
           重置
         </CButton>
