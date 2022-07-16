@@ -36,19 +36,19 @@ import 'react-dropdown-tree-select/dist/styles.css'
 const Drag = () => {
 
   const [visible, setVisible] = useState(false)
-
-    const getItems = (count, offset = 0, color="success") =>
+  const [counter, setCounter] = useState(0)
+    const getItems = (count, offset = 0, color="success", title="赋值") =>
         Array.from({length: count}, (v, k) => k).map(k => ({
             id: `item-${k + offset}-${new Date().getTime()}`,
-            content: `item ${k + offset}`,
-            color: color
+            content: `${title} ${new Date().getTime()}`,
+            color: color,
+            title: title
         }));
 
     const reorder = (list, startIndex, endIndex) => {
         const result = Array.from(list);
         const [removed] = result.splice(startIndex, 1);
         result.splice(endIndex, 0, removed);
-
         return result;
     };
 
@@ -141,6 +141,7 @@ const Drag = () => {
 
     const onChange = (currentNode, selectedNodes) => {
       console.log('onChange::', currentNode, selectedNodes)
+      setCounter(counter+1)
     }
     const onAction = (node, action) => {
       console.log('onAction::', action, node)
@@ -168,7 +169,7 @@ const Drag = () => {
         <CButton component="a" color="success"
         role="button"
         onClick={() => {
-            setState([...state, getItems(1, 0, "success")]);
+            setState([...state, getItems(1, 0, "success", "函数")]);
         }}
         >
           函数
@@ -177,15 +178,15 @@ const Drag = () => {
           <CButton component="a" color="info"
           role="button"
           onClick={() => {
-              setState([...state, getItems(1, 0, "info")]);
+              setState([...state, getItems(1, 0, "info", "赋值")]);
           }}
           >
             赋值
           </CButton>
-          <CButton component="a" color="primary"
+          <CButton component="a" color="light"
           role="button"
           onClick={() => {
-              setState([...state, getItems(1, 0, "primary")]);
+              setState([...state, getItems(1, 0, "light", "实体")]);
           }}
           >
             实体
@@ -193,7 +194,7 @@ const Drag = () => {
           <CButton component="a" color="warning"
           role="button"
           onClick={() => {
-              setState([...state, getItems(1,0, "warning")]);
+              setState([...state, getItems(1,0, "warning", "二元")]);
           }}
           >
             二元
@@ -281,11 +282,16 @@ const Drag = () => {
                                                     </CCardText>
                                                   </CCardBody>
                                                   <CCardFooter>
-                                                    <small className="text-medium-emphasis">Last updated 3 mins ago</small>
+                                                    <small className="text-medium-emphasis">90% </small>
                                                     <CButtonGroup
                                                        size="sm"
                                                        role="group" aria-label="Basic mixed styles example">
-                                                      <CButton color="success"
+                                                       <CButton color="dark"
+                                                       onClick={() => {
+                                                           setState([...state, getItems(1, 0, item.color, item.title)]);
+                                                       }}
+                                                       >克隆</CButton>
+                                                      <CButton color="primary"
                                                       onClick={() => setVisible(!visible)}>编辑</CButton>
                                                       <CButton color="danger"
                                                       data-id={item.id}
@@ -319,6 +325,19 @@ const Drag = () => {
             </div>
 
     </CCardBody>
+
+
+    <CCardFooter>
+        <CButton>
+        提交
+        </CButton>
+        <CButton color="warning">
+          重置
+        </CButton>
+        <CButton color="danger">
+          清空
+        </CButton>
+    </CCardFooter>
     </CCard>)
 }
 
