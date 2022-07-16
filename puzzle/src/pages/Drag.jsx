@@ -23,16 +23,25 @@ import {
     CToast,
     CToastBody,
     CToastHeader,
+
+    CCardTitle,
+    CCardText,
+    CCardFooter,
 } from '@coreui/react'
+
+
+import DropdownTreeSelect from 'react-dropdown-tree-select'
+import 'react-dropdown-tree-select/dist/styles.css'
 
 const Drag = () => {
 
   const [visible, setVisible] = useState(false)
 
-    const getItems = (count, offset = 0) =>
+    const getItems = (count, offset = 0, color="success") =>
         Array.from({length: count}, (v, k) => k).map(k => ({
             id: `item-${k + offset}-${new Date().getTime()}`,
-            content: `item ${k + offset}`
+            content: `item ${k + offset}`,
+            color: color
         }));
 
     const reorder = (list, startIndex, endIndex) => {
@@ -68,19 +77,19 @@ const Drag = () => {
         margin: `0 0 ${grid}px 0`,
 
         // change background colour if dragging
-        background: isDragging ? "lightgreen" : "grey",
+        background: isDragging ? "light" : "grey",
 
         // styles we need to apply on draggables
         ...draggableStyle
     });
     const getListStyle = isDraggingOver => ({
-        background: isDraggingOver ? "lightblue" : "lightgrey",
+        background: isDraggingOver ? "light" : "lightgrey",
         padding: grid,
         width: 250
     });
 
 
-    const [state, setState] = useState([getItems(10), getItems(5, 10)]);
+    const [state, setState] = useState([getItems(2, 0, "success"), getItems(2, 1, "info"), getItems(2, 2, "warning")]);
 
     const submit = () => {
 
@@ -112,6 +121,34 @@ const Drag = () => {
     }
 
 
+    // 渠道实例、field获取
+    const data = {
+      label: 'req',
+      value: 'req',
+      children: [
+        {
+          label: 'OrderInfo',
+          value: 'orderInfo',
+          children: [
+            {
+              label: 'TransactionId',
+              value: 'transactionId',
+            },
+          ],
+        },
+      ],
+    }
+
+    const onChange = (currentNode, selectedNodes) => {
+      console.log('onChange::', currentNode, selectedNodes)
+    }
+    const onAction = (node, action) => {
+      console.log('onAction::', action, node)
+    }
+    const onNodeToggle = currentNode => {
+      console.log('onNodeToggle::', currentNode)
+    }
+
     return (
 
       <CCard className="mb-4">
@@ -131,7 +168,7 @@ const Drag = () => {
         <CButton component="a" color="success"
         role="button"
         onClick={() => {
-            setState([...state, getItems(1)]);
+            setState([...state, getItems(1, 0, "success")]);
         }}
         >
           函数
@@ -140,7 +177,7 @@ const Drag = () => {
           <CButton component="a" color="info"
           role="button"
           onClick={() => {
-              setState([...state, getItems(1)]);
+              setState([...state, getItems(1, 0, "info")]);
           }}
           >
             赋值
@@ -148,7 +185,7 @@ const Drag = () => {
           <CButton component="a" color="primary"
           role="button"
           onClick={() => {
-              setState([...state, getItems(1)]);
+              setState([...state, getItems(1, 0, "primary")]);
           }}
           >
             实体
@@ -156,7 +193,7 @@ const Drag = () => {
           <CButton component="a" color="warning"
           role="button"
           onClick={() => {
-              setState([...state, getItems(1)]);
+              setState([...state, getItems(1,0, "warning")]);
           }}
           >
             二元
@@ -177,7 +214,7 @@ const Drag = () => {
             >
               <rect width="100%" height="100%" fill="#007aff"></rect>
             </svg>
-            <strong className="me-auto">新增部门</strong>
+            <strong className="me-auto">新增赋值</strong>
           </CToastHeader>
           <CToastBody>
           <CForm>
@@ -188,6 +225,13 @@ const Drag = () => {
               aria-describedby="basic-addon1"
               />
               </CInputGroup>
+
+              <CCol xs={4}>
+                 <DropdownTreeSelect data={data} onChange={onChange} onAction={onAction} onNodeToggle={onNodeToggle} />
+                 <DropdownTreeSelect data={data} onChange={onChange} onAction={onAction} onNodeToggle={onNodeToggle} />
+              </CCol>
+
+
             </CRow>
             <CButton type="submit" onClick={submit}>提交</CButton>
           </CForm>
@@ -230,34 +274,43 @@ const Drag = () => {
                                                         provided.draggableProps.style
                                                     )}
                                                 >
-                                                    <div
-                                                        style={{
-                                                            display: "flex",
-                                                            justifyContent: "space-around"
-                                                        }}
-                                                    >
-                                                        {item.content}
 
-                                                        <CButtonGroup
-                                                           size="sm"
-                                                           role="group" aria-label="Basic mixed styles example">
-                                                          <CButton color="success"
-                                                          onClick={() => setVisible(!visible)}>编辑</CButton>
-                                                          <CButton color="danger"
-                                                          data-id={item.id}
-                                                          onClick={() => {
-                                                              const newState = [...state];
-                                                              newState[ind].splice(index, 1);
-                                                              setState(
-                                                                  newState.filter(group => group.length)
-                                                              );
-                                                          }}
-                                                          >
-                                                          删除
-                                                          </CButton>
-                                                        </CButtonGroup>
 
-                                                    </div>
+
+
+                                                <CCard color={item.color}>
+                                                  <CCardBody>
+                                                    <CCardTitle>{item.content}</CCardTitle>
+                                                    <CCardText>
+                                                      This is a wide
+                                                    </CCardText>
+                                                  </CCardBody>
+                                                  <CCardFooter>
+                                                    <small className="text-medium-emphasis">Last updated 3 mins ago</small>
+                                                    <CButtonGroup
+                                                       size="sm"
+                                                       role="group" aria-label="Basic mixed styles example">
+                                                      <CButton color="success"
+                                                      onClick={() => setVisible(!visible)}>编辑</CButton>
+                                                      <CButton color="danger"
+                                                      data-id={item.id}
+                                                      onClick={() => {
+                                                          const newState = [...state];
+                                                          newState[ind].splice(index, 1);
+                                                          setState(
+                                                              newState.filter(group => group.length)
+                                                          );
+                                                      }}
+                                                      >
+                                                      删除
+                                                      </CButton>
+                                                    </CButtonGroup>
+                                                  </CCardFooter>
+                                                </CCard>
+
+
+
+
                                                 </div>
                                             )}
                                         </Draggable>
