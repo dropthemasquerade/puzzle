@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import {DragDropContext, Draggable, Droppable} from "react-beautiful-dnd";
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
-
+import {MdDragHandle} from 'react-icons/md';
 
 import {
     CButton,
@@ -30,22 +30,56 @@ import {
     CCardTitle,
     CCardText,
     CCardFooter,
-} from '@coreui/react'
+    CTooltip,
+    CInputGroupText,
+    CFormCheck,
 
+} from '@coreui/react'
 
 import DropdownTreeSelect from 'react-dropdown-tree-select'
 import 'react-dropdown-tree-select/dist/styles.css'
+
+
+import { AiFillEdit } from "react-icons/ai";
+
 
 const Drag = () => {
 
 
   const codeString = 'type myInstance struct;';
 
+  const steps = [
+    {
+      action: "ChannelName",
+      sort_index: 2,
+      item_id: "String",
+    },
+    {
+      action: "Number",
+      sort_index: 3,
+      item_id: "Int",
+    },
+    {
+      action: "Amount",
+      sort_index: 4,
+      item_id: "Float32",
+    },
+    {
+      action: "MerchantId",
+      sort_index: 5,
+      item_id: "String",
+    }
+  ]
+
   const [visible, setVisible] = useState(false)
   const [counter, setCounter] = useState(0)
+
+  const [editTitle, setEditTitle] = useState('')
+  const [editId, setEditId] = useState('')
+
     const getItems = (count, offset = 0, color="success", title="赋值") =>
         Array.from({length: count}, (v, k) => k).map(k => ({
-            id: `item-${k + offset}-${new Date().getTime()}`,
+            id: `act-${k + offset}-${new Date().getTime()}`,
             content: `${title} ${new Date().getTime()}`,
             color: color,
             title: title
@@ -56,6 +90,27 @@ const Drag = () => {
         const [removed] = result.splice(startIndex, 1);
         result.splice(endIndex, 0, removed);
         return result;
+    };
+
+    // Function to update list on drop
+    const handleDrop = (droppedItem) => {
+
+      console.log("droppedItem--->", droppedItem)
+      console.log("droId", droppedItem.draggableId, "src_index",droppedItem.source.index,
+      "dst_index",droppedItem.destination.index)
+
+      // Ignore drop outside droppable container
+      // if (!droppedItem.destination) return;
+      // var updatedList = [...itemList];
+      // // Remove dragged item
+      // const [reorderedItem] = updatedList.splice(droppedItem.source.index, 1);
+      // // Add dropped item
+      // updatedList.splice(droppedItem.destination.index, 0, reorderedItem);
+      // // Update State
+      // setItemList(updatedList);
+      // updateSort(droppedItem);
+      // // 刷新页面
+      // getApiData();
     };
 
     /**
@@ -94,6 +149,16 @@ const Drag = () => {
         width: 250
     });
 
+    const onEdit = async (e: SyntheticEvent) => {
+      e.preventDefault();
+      // setVisible(false);
+      const id = e.currentTarget.getAttribute("data-id")
+      const title = e.currentTarget.getAttribute("data-title")
+      console.log("name-->")
+      setEditTitle(title)
+      setEditId(id)
+      setVisible(!visible);
+    };
 
     const [state, setState] = useState([]);
 
@@ -166,7 +231,7 @@ const Drag = () => {
       <CCardHeader color="light">
       <CRow>
         <CCol xs={8}>
-        <CButton component="a" color="danger"
+        <CButton  shape="rounded-pill" color="danger"
         role="button"
         onClick={() => {
             setState([...state, []]);
@@ -174,24 +239,36 @@ const Drag = () => {
         >
           流程
         </CButton>
-        <CButton component="a" color="success"
-        role="button"
-        onClick={() => {
-            setState([...state, getItems(1, 0, "success", "函数")]);
-        }}
-        >
-          函数
-        </CButton>
 
-          <CButton component="a" color="info"
-          role="button"
-          onClick={() => {
-              setState([...state, getItems(1, 0, "info", "赋值")]);
-          }}
-          >
-            赋值
-          </CButton>
-          <CButton component="a" color="light"
+        <CTooltip
+          content="调用内部函数对数据进行处理"
+          placement="top"
+        >
+            <CButton  shape="rounded-pill" color="success"
+            role="button"
+            onClick={() => {
+                setState([...state, getItems(1, 0, "success", "函数")]);
+            }}
+            >
+              函数
+            </CButton>
+        </CTooltip>
+
+
+        <CTooltip
+          content="将取得的值赋值到变量或者实例字段中"
+          placement="top"
+        >
+            <CButton  shape="rounded-pill" color="info"
+            role="button"
+            onClick={() => {
+                setState([...state, getItems(1, 0, "info", "赋值")]);
+            }}
+            >
+              赋值
+            </CButton>
+        </CTooltip>
+          <CButton  shape="rounded-pill" color="light"
           role="button"
           onClick={() => {
               setState([...state, getItems(1, 0, "light", "实体")]);
@@ -199,7 +276,7 @@ const Drag = () => {
           >
             实体
           </CButton>
-          <CButton component="a" color="warning"
+          <CButton  shape="rounded-pill" color="warning"
           role="button"
           onClick={() => {
               setState([...state, getItems(1,0, "warning", "二元")]);
@@ -263,8 +340,15 @@ const Drag = () => {
                                                            setState([...state, getItems(1, 0, item.color, item.title)]);
                                                        }}
                                                        >克隆</CButton>
+
+
                                                       <CButton color="primary"
-                                                      onClick={() => setVisible(!visible)}>编辑</CButton>
+                                                      data-id={item.id}
+                                                      data-title={item.title}
+                                                      onClick={onEdit}>
+                                                      编辑</CButton>
+
+
                                                       <CButton color="danger"
                                                       data-id={item.id}
                                                       onClick={() => {
@@ -300,19 +384,19 @@ const Drag = () => {
 
 
     <CCardFooter>
-        <CButton>
+        <CButton variant="outline">
         提交
         </CButton>
-        <CButton color="success">
+        <CButton color="success" variant="outline">
           渠道绑定
         </CButton>
-        <CButton color="secondary">
+        <CButton color="secondary" variant="outline">
           部署
         </CButton>
-        <CButton color="warning">
+        <CButton color="warning" variant="outline">
           重置
         </CButton>
-        <CButton color="danger">
+        <CButton color="danger" variant="outline">
           清空
         </CButton>
     </CCardFooter>
@@ -322,9 +406,8 @@ const Drag = () => {
 
     <CCol sm={4}>
     <CCard>
-      <CCardHeader>参数设定</CCardHeader>
+      <CCardHeader>设定</CCardHeader>
       <CCardBody>
-
 
 
 
@@ -341,33 +424,101 @@ const Drag = () => {
           >
             <rect width="100%" height="100%" fill="#007aff"></rect>
           </svg>
-          <strong className="me-auto">新增赋值</strong>
+          <strong className="me-auto">新增{editTitle}-{editId}</strong>
         </CToastHeader>
         <CToastBody>
+
+        <CCard className="mb-4">
+
+        <DragDropContext onDragEnd={handleDrop}>
+        <CCardBody>
+        <CTable>
+        <CTableHead color="light">
+          <CTableRow>
+            <CTableHeaderCell scope="col">操作</CTableHeaderCell>
+            <CTableHeaderCell scope="col">类型</CTableHeaderCell>
+            <CTableHeaderCell scope="col">动作</CTableHeaderCell>
+
+          </CTableRow>
+        </CTableHead>
+
+
+        <Droppable droppableId="CTableBody">
+            {(provided) => (
+              <CTableBody ref={provided.innerRef} {...provided.draggableProps}>
+
+                {steps && steps.map((user, index) => (
+                  <Draggable key={user.item_id} draggableId={user.item_id} index={user.sort_index}>
+                    {(provided) => (
+                      <CTableRow color="Primary" ref={provided.innerRef} {...provided.draggableProps}  {...provided.dragHandleProps}>
+                        <CTableDataCell scope="row">
+                        <CButtonGroup
+                           size="sm"
+                           role="group" aria-label="Basic mixed styles example">
+                          <CButton color="danger"
+                          data-id={user.item_id}
+                          >
+                          -
+                          </CButton>
+                        </CButtonGroup>
+                        </CTableDataCell>
+                        <CTableDataCell scope="col" >{user.item_id}</CTableDataCell>
+                        <CTableDataCell scope="col">{user.action}</CTableDataCell>
+                      </CTableRow>
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+              </CTableBody>
+            )}
+        </Droppable>
+
+    </CTable>
+    </CCardBody>
+    </DragDropContext>
+
+    </CCard>
+
+
+
+
+
         <CForm>
-          <CRow className="mb-3">
-          <CInputGroup class="mb-3">
-            <CFormInput placeholder="channelInput"
-            aria-label="channelInput"
-            aria-describedby="basic-addon1"
+          <CRow sm={4}>
+          <CInputGroup>
+            <CInputGroupText>+</CInputGroupText>
+            <CInputGroupText>
+              <CFormCheck type="checkbox" value="" aria-label="required or no"/>
+            </CInputGroupText>
+
+              <CFormInput aria-label="实例名称" />
+
+            <CFormSelect
+              aria-label=""
+              options={[
+                { label: 'Int', value: '1' },
+                { label: 'String', value: '2' },
+                { label: 'Float32', value: '3' }
+              ]}
             />
-            </CInputGroup>
+          </CInputGroup>
 
-            <CCol xs={4}>
-               <DropdownTreeSelect data={data} onChange={onChange} onAction={onAction} onNodeToggle={onNodeToggle} />
-               <DropdownTreeSelect data={data} onChange={onChange} onAction={onAction} onNodeToggle={onNodeToggle} />
+            <CCol sm={4}>
+                  <CButton type="submit" onClick={submit}>提交</CButton>
             </CCol>
-
-
           </CRow>
-          <CButton type="submit" onClick={submit}>提交</CButton>
+
         </CForm>
         </CToastBody>
       </CToast>
+
+
+
+
       </CCardBody>
     </CCard>
     <CCard>
-      <CCardHeader>代码预览</CCardHeader>
+      <CCardHeader>预览</CCardHeader>
       <CCardBody>
 
         <SyntaxHighlighter language="golang" style={docco}>
